@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OWASP Risk Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Main Content: Inputs -->
+        <main class="input-section">
+            <header>
+                <h1>OWASP Risk Calculator</h1>
+                <p class="subtitle">Standard Risk Rating Methodology</p>
+            </header>
+
+            <div class="factors-grid">
+                <!-- Likelihood Factors -->
+                <section class="factor-column">
+                    <h2 class="section-title">Likelihood Factors</h2>
+
+                    <div class="factor-group">
+                        <h3>Threat Agent Factors</h3>
+                        <div class="input-wrapper">
+                            <label>Skill Level</label>
+                            <select id="skill_level" class="factor-select" data-type="likelihood">
+                                <option value="1">No Technical Skills (1)</option>
+                                <option value="3">Some Technical Skills (3)</option>
+                                <option value="5">Advanced Computer User (5)</option>
+                                <option value="6">Network and Programming Skills (6)</option>
+                                <option value="9">Security Penetration Skills (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Motive</label>
+                            <select id="motive" class="factor-select" data-type="likelihood">
+                                <option value="1">Low or No Reward (1)</option>
+                                <option value="4">Possible Reward (4)</option>
+                                <option value="9">High Reward (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Opportunity</label>
+                            <select id="opportunity" class="factor-select" data-type="likelihood">
+                                <option value="0">Full Access/Expensive Resources (0)</option>
+                                <option value="4">Special Access/Resources (4)</option>
+                                <option value="7">Some Access/Resources (7)</option>
+                                <option value="9">No Access/Resources (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Size</label>
+                            <select id="size" class="factor-select" data-type="likelihood">
+                                <option value="2">Developers/System Admins (2)</option>
+                                <option value="4">Intranet Users (4)</option>
+                                <option value="5">Partners (5)</option>
+                                <option value="6">Authenticated Users (6)</option>
+                                <option value="9">Anonymous Internet Users (9)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="factor-group">
+                        <h3>Vulnerability Factors</h3>
+                        <div class="input-wrapper">
+                            <label>Ease of Discovery</label>
+                            <select id="ease_discovery" class="factor-select" data-type="likelihood">
+                                <option value="1">Practically Impossible (1)</option>
+                                <option value="3">Difficult (3)</option>
+                                <option value="7">Easy (7)</option>
+                                <option value="9">Automated Tools available (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Ease of Exploit</label>
+                            <select id="ease_exploit" class="factor-select" data-type="likelihood">
+                                <option value="1">Theoretical (1)</option>
+                                <option value="3">Difficult (3)</option>
+                                <option value="5">Easy (5)</option>
+                                <option value="9">Automated Tools available (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Awareness</label>
+                            <select id="awareness" class="factor-select" data-type="likelihood">
+                                <option value="1">Unknown (1)</option>
+                                <option value="4">Hidden (4)</option>
+                                <option value="6">Obvious (6)</option>
+                                <option value="9">Public Knowledge (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Intrusion Detection</label>
+                            <select id="intrusion_detection" class="factor-select" data-type="likelihood">
+                                <option value="1">Active Detection (1)</option>
+                                <option value="3">Logged and Reviewed (3)</option>
+                                <option value="8">Logged without Review (8)</option>
+                                <option value="9">Not Logged (9)</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Impact Factors -->
+                <section class="factor-column">
+                    <h2 class="section-title">Impact Factors</h2>
+
+                    <div class="factor-group">
+                        <h3>Technical Impact</h3>
+                        <div class="input-wrapper">
+                            <label>Loss of Confidentiality</label>
+                            <select id="loss_confidentiality" class="factor-select" data-type="impact">
+                                <option value="2">Minimal non-sensitive data (2)</option>
+                                <option value="6">Minimal critical data (6)</option>
+                                <option value="6">Extensive non-sensitive data (6)</option>
+                                <option value="7">Extensive critical data (7)</option>
+                                <option value="9">All data disclosed (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Loss of Integrity</label>
+                            <select id="loss_integrity" class="factor-select" data-type="impact">
+                                <option value="1">Minimal slightly corrupt (1)</option>
+                                <option value="3">Minimal seriously corrupt (3)</option>
+                                <option value="5">Extensive slightly corrupt (5)</option>
+                                <option value="7">Extensive seriously corrupt (7)</option>
+                                <option value="9">All data totally corrupt (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Loss of Availability</label>
+                            <select id="loss_availability" class="factor-select" data-type="impact">
+                                <option value="1">Minimal secondary services (1)</option>
+                                <option value="5">Minimal primary services (5)</option>
+                                <option value="5">Extensive secondary services (5)</option>
+                                <option value="7">Extensive primary services (7)</option>
+                                <option value="9">All services completely lost (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Loss of Accountability</label>
+                            <select id="loss_accountability" class="factor-select" data-type="impact">
+                                <option value="1">Fully traceable (1)</option>
+                                <option value="7">Possibly traceable (7)</option>
+                                <option value="9">Completely anonymous (9)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="factor-group">
+                        <h3>Business Impact</h3>
+                        <div class="input-wrapper">
+                            <label>Financial Damage</label>
+                            <select id="financial_damage" class="factor-select" data-type="impact">
+                                <option value="1">Less than cost to fix (1)</option>
+                                <option value="3">Minor effect on profit (3)</option>
+                                <option value="7">Significant effect on profit (7)</option>
+                                <option value="9">Bankruptcy (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Reputation Damage</label>
+                            <select id="reputation_damage" class="factor-select" data-type="impact">
+                                <option value="1">Minimal damage (1)</option>
+                                <option value="4">Loss of major accounts (4)</option>
+                                <option value="5">Loss of goodwill (5)</option>
+                                <option value="9">Brand damage (9)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Non-Compliance</label>
+                            <select id="non_compliance" class="factor-select" data-type="impact">
+                                <option value="2">Minor violation (2)</option>
+                                <option value="5">Clear violation (5)</option>
+                                <option value="7">High profile violation (7)</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Privacy Violation</label>
+                            <select id="privacy_violation" class="factor-select" data-type="impact">
+                                <option value="3">One individual (3)</option>
+                                <option value="5">Hundreds of people (5)</option>
+                                <option value="7">Thousands of people (7)</option>
+                                <option value="9">Millions of people (9)</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Sidebar: Results & Charts -->
+        <aside class="results-sidebar">
+            <div class="sticky-wrapper">
+                <div class="overall-risk-card">
+                    <h2>Overall Risk</h2>
+                    <div id="risk-severity" class="severity-display note">Note</div>
+                </div>
+
+                <div class="scores-container">
+                    <div class="score-item">
+                        <span class="label">Likelihood</span>
+                        <span id="likelihood-score" class="value">0.0</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="label">Impact</span>
+                        <span id="impact-score" class="value">0.0</span>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="riskRadarChart"></canvas>
+                </div>
+            </div>
+        </aside>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
