@@ -1,13 +1,11 @@
 :root {
-    --bg-color: #f8fafc;
-    /* Light gray background for professional look */
-    --sidebar-bg: #ffffff;
+    --bg-color: #fff7ed;
+    --sidebar-bg: #ffedd5;
     --text-primary: #1e293b;
     --text-secondary: #64748b;
     --accent-color: #2563eb;
     --border-color: #e2e8f0;
 
-    /* Severity Colors (More muted/professional) */
     --note-color: #94a3b8;
     --low-color: #22c55e;
     --medium-color: #eab308;
@@ -15,16 +13,7 @@
     --critical-color: #ef4444;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg-color: #0f172a;
-        --sidebar-bg: #1e293b;
-        --text-primary: #f1f5f9;
-        --text-secondary: #94a3b8;
-        --accent-color: #3b82f6;
-        --border-color: #334155;
-    }
-}
+
 
 * {
     box-sizing: border-box;
@@ -141,7 +130,7 @@ header h1 {
 .results-sidebar {
     background-color: var(--sidebar-bg);
     border-left: 1px solid var(--border-color);
-    padding: 2rem;
+    padding: 1.5rem;
 }
 
 .sticky-wrapper {
@@ -163,9 +152,10 @@ header h1 {
 }
 
 .severity-display {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 800;
     line-height: 1;
+    margin-top: 0.5rem;
 }
 
 .scores-container {
@@ -196,27 +186,52 @@ header h1 {
 
 .chart-container {
     position: relative;
-    height: 300px;
+    height: 600px;
     width: 100%;
+    margin-top: 1rem;
 }
 
-/* Severity Colors */
-.note {
-    color: var(--note-color);
+/* Risk Level Backgrounds */
+.bg-note {
+    background-color: #e2e8f0;
+    color: #475569;
 }
 
-.low {
-    color: var(--low-color);
+.bg-low {
+    background-color: #dcfce7;
+    color: #166534;
 }
 
-.medium {
-    color: var(--medium-color);
+.bg-medium {
+    background-color: #fef9c3;
+    color: #854d0e;
 }
 
-.high {
-    color: var(--high-color);
+.bg-high {
+    background-color: #ffccbc;
+    color: #9a3412;
 }
 
-.critical {
-    color: var(--critical-color);
+.bg-critical {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.score-item {
+    background-color: var(--bg-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.severity-display {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+    transition: background-color 0.3s, color 0.3s;
 }

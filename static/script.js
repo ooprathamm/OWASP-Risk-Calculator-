@@ -2,19 +2,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const selects = document.querySelectorAll('.factor-select');
     let riskChart = null;
 
-    // Initial calculation
+    selects.forEach(select => {
+        updateSelectColor(select);
+    });
     calculateRisk();
 
-    // Add event listeners
     selects.forEach(select => {
-        select.addEventListener('change', calculateRisk);
+        select.addEventListener('change', (e) => {
+            updateSelectColor(e.target);
+            calculateRisk();
+        });
     });
 
     async function calculateRisk() {
         const likelihoodFactors = [];
         const impactFactors = [];
 
-        // Collect values for calculation
         document.querySelectorAll('.factor-select[data-type="likelihood"]').forEach(el => {
             likelihoodFactors.push(parseFloat(el.value));
         });
@@ -48,35 +51,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateUI(data) {
-        // Update Scores
-        document.getElementById('likelihood-score').textContent = data.likelihood_score;
-        document.getElementById('impact-score').textContent = data.impact_score;
+        const likelihoodScoreEl = document.getElementById('likelihood-score');
+        const impactScoreEl = document.getElementById('impact-score');
 
-        // Update Severity
+        likelihoodScoreEl.textContent = data.likelihood_score;
+        impactScoreEl.textContent = data.impact_score;
+
+        updateRiskClass(likelihoodScoreEl.parentElement, data.likelihood_level);
+        updateRiskClass(impactScoreEl.parentElement, data.impact_level);
+
         const severityEl = document.getElementById('risk-severity');
         severityEl.textContent = data.risk_severity;
 
-        // Reset classes and add new one
-        severityEl.className = 'severity-display';
-        severityEl.classList.add(data.risk_severity.toLowerCase());
+        updateRiskClass(severityEl, data.risk_severity);
+    }
+
+    function updateRiskClass(element, level) {
+        element.classList.remove('bg-note', 'bg-low', 'bg-medium', 'bg-high', 'bg-critical');
+
+        if (level) {
+            const className = 'bg-' + level.toLowerCase();
+            element.classList.add(className);
+        }
+    }
+
+    function updateSelectColor(select) {
+        const val = parseInt(select.value);
+        select.classList.remove('bg-low', 'bg-medium', 'bg-high');
+
+        if (val < 3) {
+            select.classList.add('bg-low');
+        } else if (val < 6) {
+            select.classList.add('bg-medium');
+        } else {
+            select.classList.add('bg-high');
+        }
     }
 
     function updateChart(likelihoodFactors, impactFactors) {
         const ctx = document.getElementById('riskRadarChart').getContext('2d');
 
-        // Labels for the 8 factors
-        // Likelihood: Skill, Motive, Opp, Size, Discovery, Exploit, Awareness, Detection
-        // Impact: Conf, Integ, Avail, Account, Fin, Rep, Compliance, Privacy
-        // To make the radar chart readable, we might want to average them into the 4 sub-groups or show all 8?
-        // Showing all 16 is too much. Let's show the 8 sub-groups (averages) or just the 2 main scores?
-        // Better: Show the 8 factors from the UI groups (4 Likelihood, 4 Impact).
-
-        // Actually, the UI has 8 inputs for Likelihood and 8 for Impact.
-        // Let's group them by the 4 sub-headers in the UI:
-        // 1. Threat Agent (Avg of first 4 Likelihood)
-        // 2. Vulnerability (Avg of last 4 Likelihood)
-        // 3. Technical Impact (Avg of first 4 Impact)
-        // 4. Business Impact (Avg of last 4 Impact)
 
         const threatAgent = average(likelihoodFactors.slice(0, 4));
         const vulnerability = average(likelihoodFactors.slice(4, 8));
@@ -94,12 +108,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 label: 'Risk Factors',
                 data: [threatAgent, vulnerability, techImpact, bizImpact],
                 fill: true,
-                backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                borderColor: 'rgb(59, 130, 246)',
-                pointBackgroundColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(37, 99, 235, 0.2)', // Royal Blue transparent
+                borderColor: 'rgb(37, 99, 235)', // Royal Blue
+                pointBackgroundColor: 'rgb(37, 99, 235)',
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgb(59, 130, 246)'
+                pointHoverBorderColor: 'rgb(37, 99, 235)'
             }]
         };
 
@@ -111,6 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 type: 'radar',
                 data: data,
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: 10
+                    },
                     elements: {
                         line: {
                             borderWidth: 3
@@ -119,13 +138,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     scales: {
                         r: {
                             angleLines: {
-                                display: false
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.1)'
                             },
-                            suggestedMin: 0,
-                            suggestedMax: 9,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 10
+                                },
+                                color: '#64748b'
+                            },
                             ticks: {
-                                stepSize: 3
-                            }
+                                backdropColor: 'transparent',
+                                backdropPadding: 0,
+                                font: {
+                                    size: 9
+                                },
+                                stepSize: 2,
+                                showLabelBackdrop: false
+                            },
+                            min: 0,
+                            max: 9
                         }
                     },
                     plugins: {

@@ -22,27 +22,12 @@ class OwaspCalculator:
             return 'High'
 
     def calculate_risk(self, likelihood_factors, impact_factors):
-        """
-        Calculates the overall risk based on likelihood and impact factors.
-        
-        Args:
-            likelihood_factors (list): List of integers (0-9) representing likelihood.
-            impact_factors (list): List of integers (0-9) representing impact.
-            
-        Returns:
-            dict: Contains scores, levels, and final risk severity.
-        """
         likelihood_score = self.calculate_score(likelihood_factors)
         impact_score = self.calculate_score(impact_factors)
 
         likelihood_level = self.get_level(likelihood_score)
         impact_level = self.get_level(impact_score)
 
-        # Determine Risk Severity from Matrix
-        # Note: The matrix is typically Impact x Likelihood or vice versa.
-        # Standard: Impact (Rows) x Likelihood (Cols)
-        
-        # Adjusting matrix access to match standard: risk_matrix[Impact][Likelihood]
         risk_severity = self.risk_matrix[impact_level][likelihood_level]
 
         return {
